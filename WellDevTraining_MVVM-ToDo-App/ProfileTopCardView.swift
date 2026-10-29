@@ -34,7 +34,7 @@ class ProfileTopCardView: UIView {
         label.text = "Hello " + (self.name ?? "") + ","
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .label
-        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textAlignment = .left
         return label
     }()
@@ -43,7 +43,7 @@ class ProfileTopCardView: UIView {
         let label = UILabel()
         label.text = "You have work today"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .label
+        label.textColor = .darkGray
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .left
         return label
@@ -67,6 +67,16 @@ class ProfileTopCardView: UIView {
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         
         return imageView
+    }()
+    
+    lazy var addIcon: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "plus.app"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        return button
     }()
 
     private func setupView() {
@@ -112,6 +122,14 @@ class ProfileTopCardView: UIView {
 //            subLabel.heightAnchor.constraint(equalToConstant: 20),
         ])
         
+        
+        addSubview(addIcon)
+        NSLayoutConstraint.activate([
+//            notificationIcon.leftAnchor.constraint(equalTo: leftAnchor, constant: 0),
+            addIcon.rightAnchor.constraint(equalTo: notificationIcon.leftAnchor, constant: -10),
+            addIcon.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+//            subLabel.heightAnchor.constraint(equalToConstant: 20),
+        ])
 
         
     }

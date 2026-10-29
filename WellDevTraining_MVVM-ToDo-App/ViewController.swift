@@ -62,6 +62,9 @@ class ViewController: UIViewController {
         return table
     }()
     
+    @objc func lol() {
+        navigationController?.pushViewController(NewToDoViewController(), animated: true)
+    }
     
     
     var toDoTaskModel = ToDoTaskModel()
@@ -76,6 +79,8 @@ class ViewController: UIViewController {
         tasks = toDoTaskModel.getTasks()
 
         let profileCard = ProfileTopCardView(name: "Minhaj")
+        profileCard.addIcon.addTarget(self, action: #selector(lol), for: .touchUpInside)
+   
         view.addSubview(profileCard)
         NSLayoutConstraint.activate([
             profileCard.leftAnchor.constraint(
@@ -96,22 +101,26 @@ class ViewController: UIViewController {
         let view1 = DashboardCardView(
             label: "Today",
             count: "13",
-            bgColor: UIColor(red: 180/255.0, green: 196/255.0, blue: 255/255.0, alpha: 1)
+            bgColor: UIColor(red: 180/255.0, green: 196/255.0, blue: 255/255.0, alpha: 1),
+            iconImage: UIImage(systemName: "clock.fill")
         )
         let view2 = DashboardCardView(
             label: "Scheduled",
             count: "13",
-            bgColor: UIColor(red: 255/255.0, green: 245/255.0, blue: 127/255.0, alpha: 1)
+            bgColor: UIColor(red: 255/255.0, green: 245/255.0, blue: 127/255.0, alpha: 1),
+            iconImage: UIImage(systemName: "stopwatch.fill")
         )
         let view3 = DashboardCardView(
             label: "All",
             count: "13",
-            bgColor: UIColor(red: 207/255.0, green: 243/255.0, blue: 233/255.0, alpha: 1)
+            bgColor: UIColor(red: 207/255.0, green: 243/255.0, blue: 233/255.0, alpha: 1),
+            iconImage: UIImage(systemName: "arrow.clockwise.circle.fill")
         )
         let view4 = DashboardCardView(
             label: "Overdue",
             count: "13",
-            bgColor: UIColor(red: 255/255.0, green: 192/255.0, blue: 245/255.0, alpha: 1)
+            bgColor: UIColor(red: 255/255.0, green: 192/255.0, blue: 245/255.0, alpha: 1),
+            iconImage: UIImage(systemName: "gauge.with.needle.fill")
         )
 
         horizontalStack1.addArrangedSubview(view1)
@@ -129,7 +138,7 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             verticalStack.topAnchor.constraint(
                 equalTo: profileCard.bottomAnchor,
-                constant: 20
+                constant: 30
             ),
             verticalStack.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor,

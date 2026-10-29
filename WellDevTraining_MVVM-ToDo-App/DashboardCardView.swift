@@ -12,16 +12,40 @@ class DashboardCardView: UIView {
     var count: String?
     var image: String?
     var bgColor: UIColor?
+    var iconImage: UIImage?
     
     
-    init(label: String? = nil, count: String? = nil, image: String? = nil, bgColor: UIColor? = nil) {
+    init(label: String? = nil, count: String? = nil, image: String? = nil, bgColor: UIColor? = nil, iconImage: UIImage? = nil) {
         self.label = label
         self.count = count
         self.image = image
         self.bgColor = bgColor
+        self.iconImage = iconImage
         super.init(frame: .zero)
         setupView()
     }
+    
+    lazy var iconCircle: UIView = {
+        let circle = UIView()
+        
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        circle.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        circle.layer.cornerRadius = 20
+        circle.backgroundColor = .white
+        
+        let image = UIImageView()
+        image.image = iconImage?.withTintColor(bgColor ?? .systemBlue, renderingMode: .alwaysOriginal)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        
+        circle.addSubview(image)
+        image.centerXAnchor.constraint(equalTo: circle.centerXAnchor).isActive = true
+        image.centerYAnchor.constraint(equalTo: circle.centerYAnchor).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        image.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        
+        return circle
+    }()
 
 
     lazy var titleLabel: UILabel = {
@@ -29,7 +53,7 @@ class DashboardCardView: UIView {
         label.text = self.label ?? ""
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .label
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textAlignment = .left
         return label
     }()
@@ -39,7 +63,7 @@ class DashboardCardView: UIView {
         label.text = self.count ?? ""
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .label
-        label.font = .systemFont(ofSize: 30, weight: .semibold)
+        label.font = .systemFont(ofSize: 30, weight: .regular)
         label.textAlignment = .right
         return label
     }()
@@ -67,21 +91,30 @@ class DashboardCardView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         
         
+        
+
+
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
-            titleLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+            titleLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            titleLabel.heightAnchor.constraint(equalToConstant: 30),
-            titleLabel.widthAnchor.constraint(equalToConstant: 100)
+            titleLabel.heightAnchor.constraint(equalToConstant: 20),
+//            titleLabel.widthAnchor.constraint(equalToConstant: 100)
         ])
         
         
         addSubview(countLabel)
         NSLayoutConstraint.activate([
-            countLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            countLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -10),
             countLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
             countLabel.heightAnchor.constraint(equalToConstant: 30),
-            countLabel.widthAnchor.constraint(equalToConstant: 100)
+//            countLabel.widthAnchor.constraint(equalToConstant: 100)
+        ])
+        
+        addSubview(iconCircle)
+        NSLayoutConstraint.activate([
+            iconCircle.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
+            iconCircle.topAnchor.constraint(equalTo: topAnchor, constant: 10),
         ])
         
     }
