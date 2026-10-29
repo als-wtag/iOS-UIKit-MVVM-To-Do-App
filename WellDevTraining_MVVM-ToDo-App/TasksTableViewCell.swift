@@ -9,15 +9,44 @@ import UIKit
 
 class TasksTableViewCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    static let identifier = "CustomContainerCell"
+
+    var customView: TaskCardView = {
+        let view = TaskCardView(
+            label: "",
+            date: "",
+            time: "",
+            isDone: false
+        )
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupCellLayout()
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupCellLayout()
+    }
 
-        // Configure the view for the selected state
+    private func setupCellLayout() {
+        contentView.addSubview(customView)
+
+        NSLayoutConstraint.activate([
+            customView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            customView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor
+            ),
+            customView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor
+            ),
+            customView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor, constant: -12
+            ),
+        ])
     }
 
 }

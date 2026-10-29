@@ -6,3 +6,8 @@
 //
 
 import Foundation
+import UIKit
+
+//func convertFromHex(hex: String) {
+//    UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
+//}
