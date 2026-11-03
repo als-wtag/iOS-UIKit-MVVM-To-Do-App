@@ -9,16 +9,14 @@ import UIKit
 
 class TaskCardView: UIView {
     var label: String?
-    var date: String?
-    var time: String?
-    var isDone: Bool?
+    var date: Date?
+    var isCompleted: Bool?
     
     
-    init(label: String? = nil, date: String? = nil, time: String? = nil, isDone: Bool? = nil) {
+    init(label: String? = nil, date: Date? = nil, isCompleted: Bool? = nil) {
         self.label = label
         self.date = date
-        self.time = time
-        self.isDone = isDone
+        self.isCompleted = isCompleted
         super.init(frame: .zero)
         setupView()
     }
@@ -66,7 +64,10 @@ class TaskCardView: UIView {
     
     lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.text = self.date ?? ""
+        
+        let date = self.date?.formatted(date: .abbreviated, time: .omitted)
+        
+        label.text = Calendar.current.isDateInToday(self.date ?? Date()) ? "Today" : (date ?? "")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .label
         label.font = .systemFont(ofSize: 12, weight: .regular)
@@ -86,7 +87,10 @@ class TaskCardView: UIView {
     
     lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.text = self.time ?? ""
+        
+        let time = self.date?.formatted(date: .omitted, time: .shortened)
+        
+        label.text = time ?? ""
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .label
         label.font = .systemFont(ofSize: 12, weight: .regular)
@@ -104,7 +108,7 @@ class TaskCardView: UIView {
         
         
 //        layer.cornerRadius = 10
-        heightAnchor.constraint(equalToConstant: 60).isActive = true
+//        heightAnchor.constraint(equalToConstant: 60).isActive = true
         translatesAutoresizingMaskIntoConstraints = false
         
         
@@ -154,20 +158,28 @@ class TaskCardView: UIView {
         
         
     }
-
-    func configure(label: String?, date: String?, time: String?, isDone: Bool?) {
+    
+    
+    func configure(label: String?, date: Date?, isCompleted: Bool?) {
+//        let isOverdue = false ||  (date ?? Date()) < Date() && !(isCompleted ?? false)
+        
         self.label = label
         self.date = date
-        self.time = time
-        self.isDone = isDone
+        self.isCompleted = isCompleted
+        
+//        self.titleLabel.textColor = isOverdue ? .systemRed : .label
 
         titleLabel.text = label ?? ""
-        dateLabel.text = date ?? ""
-        timeLabel.text = time ?? ""
+        
+        let dateStr = date?.formatted(date: .abbreviated, time: .omitted)
+        dateLabel.text = Calendar.current.isDateInToday(self.date ?? Date()) ? "Today" : (dateStr ?? "")
+        
+        let timeStr = date?.formatted(date: .omitted, time: .shortened)
+        timeLabel.text = timeStr ?? ""
 
         // Update the completion icon too.
         circleIcon.image = UIImage(
-            systemName: (isDone ?? false) ? "checkmark.circle.fill" : "circle"
+            systemName: (isCompleted ?? false) ? "checkmark.circle.fill" : "circle"
         )
     }
 

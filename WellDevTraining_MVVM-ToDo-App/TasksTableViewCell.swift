@@ -14,9 +14,8 @@ class TasksTableViewCell: UITableViewCell {
     var customView: TaskCardView = {
         let view = TaskCardView(
             label: "",
-            date: "",
-            time: "",
-            isDone: false
+            date: Date(),
+            isCompleted: false
         )
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

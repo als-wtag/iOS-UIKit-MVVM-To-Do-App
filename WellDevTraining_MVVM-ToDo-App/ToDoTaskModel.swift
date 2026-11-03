@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftData
 
 
 struct ToDoTask {
@@ -14,6 +15,13 @@ struct ToDoTask {
     var date: String
     var time: String
     var isDone: Bool
+}
+
+struct GrouppedTodoCount {
+    var today: Int
+    var scheduled: Int
+    var all: Int
+    var overdue: Int
 }
 
 class ToDoTaskModel {
@@ -27,7 +35,18 @@ class ToDoTaskModel {
     func getTasks() -> [ToDoTask] {
         return tasks
     }
+}
+@Model
+class ToDoItem {
+    var title: String
+    var date: Date
+    var isCompleted: Bool
     
+    init(title: String, date: Date, isCompleted: Bool) {
+        self.title = title
+        self.date = date
+        self.isCompleted = isCompleted
+    }
 }
 
 

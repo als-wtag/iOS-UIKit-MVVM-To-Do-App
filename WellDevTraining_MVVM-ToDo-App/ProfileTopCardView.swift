@@ -53,8 +53,8 @@ class ProfileTopCardView: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "bell.badge")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         
         return imageView
     }()
@@ -63,18 +63,23 @@ class ProfileTopCardView: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "ellipsis")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         
         return imageView
     }()
     
     lazy var addIcon: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "plus.app"), for: .normal)
+        var config = UIButton.Configuration.plain()
+
+        let sizeConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .default)
+        config.image = UIImage(systemName: "plus", withConfiguration: sizeConfig)
+
+        let button = UIButton(configuration: config, primaryAction: nil)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
         
         return button
     }()
