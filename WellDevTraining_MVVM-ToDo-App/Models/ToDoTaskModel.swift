@@ -1,20 +1,12 @@
-//
-//  ToDoTaskModel.swift
-//  WellDevTraining_MVVM-ToDo-App
-//
-//  Created by Sarowar on 29/10/26.
-//
-
 import Foundation
 import UIKit
 import SwiftData
 
-
 struct ToDoTask {
-    var title: String
-    var date: String
-    var time: String
-    var isDone: Bool
+    private(set) var title: String
+    private(set) var date: String
+    private(set) var time: String
+    private(set) var isDone: Bool
 }
 
 struct GrouppedTodoCount {
@@ -36,17 +28,16 @@ class ToDoTaskModel {
         return tasks
     }
 }
+
 @Model
 class ToDoItem {
     var title: String
     var date: Date
     var isCompleted: Bool
     
-    init(title: String, date: Date, isCompleted: Bool) {
+    init(title: String = "", date: Date = Date(), isCompleted: Bool = false) {
         self.title = title
         self.date = date
         self.isCompleted = isCompleted
     }
 }
-
-

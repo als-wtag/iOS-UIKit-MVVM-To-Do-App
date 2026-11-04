@@ -1,94 +1,58 @@
-//
-//  ViewController.swift
-//  WellDevTraining_MVVM-ToDo-App
-//
-//  Created by Sarowar on 29/10/26.
-//
-
 import SwiftData
 import UIKit
-import UserNotifications
 
-class ViewController: UIViewController {
-    let viewModel: ViewModel
-    
-    init(viewModel: ViewModel){
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    let horizontalStack1: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.alignment = .fill
-        stack.spacing = 8
-        return stack
-    }()
-
-    let horizontalStack2: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.alignment = .fill
-        stack.spacing = 8
-        return stack
-    }()
-
-    let verticalStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.distribution = .fillEqually
-        stack.alignment = .fill
-        stack.spacing = 8
-        return stack
-    }()
-
-    let tasksTable: UITableView = {
-        let table = UITableView()
-        table.translatesAutoresizingMaskIntoConstraints = false
-        return table
-    }()
-
-    @objc func didTapAdd() {
-        let newToDoViewModel = viewModel.makeNewToDoViewModel()
-        let newToDoViewController = NewToDoViewController(viewModel: newToDoViewModel)
-        newToDoViewController.handleCreateNewToDoCompletion = {
-            
-            () in self.setupDashboard()
-        }
-        navigationController?.present(
-            UINavigationController(rootViewController: newToDoViewController),
-            animated: true
-        )
-    }
-
-    var todayCard: DashboardCardView = DashboardCardView()
-    var scheduledCard: DashboardCardView = DashboardCardView()
-    var allCard: DashboardCardView = DashboardCardView()
-    var overdueCard: DashboardCardView = DashboardCardView()
+class DashboardViewController: UIViewController {
+    private let viewModel: DashboardViewModel = DashboardViewModel()
+    private var profileCard: ProfileTopCardView = ProfileTopCardView()
+    private var dashboardCardsTopRow: UIStackView = UIStackView()
+    private var dashboardCardsBottomRow: UIStackView = UIStackView()
+    private let dashboardCardsContainer: UIStackView = UIStackView()
+    private let todayCard: DashboardCardView = DashboardCardView()
+    private let scheduledCard: DashboardCardView = DashboardCardView()
+    private let allCard: DashboardCardView = DashboardCardView()
+    private let overdueCard: DashboardCardView = DashboardCardView()
+    private let tasksTable: UITableView = UITableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         view.backgroundColor = .systemBackground
-        
-    
+        setupView()
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setDashboardCounts()
+    }
 
-        viewModel.tasks = viewModel.toDoTaskModel.getTasks()
+    private func setupDashboardCardsContainer() {
+        dashboardCardsContainer.axis = .vertical
+        dashboardCardsContainer.distribution = .fillEqually
+        dashboardCardsContainer.alignment = .fill
+        dashboardCardsContainer.spacing = 8
+    }
 
-        let profileCard = ProfileTopCardView(name: "Minhaj")
+    private func setupView() {
+        setupProfileCard()
+        setupDashboardCards()
+        setupToDoTable()
+    }
+
+    private func generateDashboardRow() -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.alignment = .fill
+        stack.spacing = 8
+        return stack
+    }
+
+    private func setupProfileCard() {
+        profileCard = ProfileTopCardView(name: "Minhaj")
         profileCard.addIcon.addTarget(
             self,
             action: #selector(didTapAdd),
             for: .touchUpInside
         )
-
         view.addSubview(profileCard)
         NSLayoutConstraint.activate([
             profileCard.leftAnchor.constraint(
@@ -105,34 +69,39 @@ class ViewController: UIViewController {
             ),
             profileCard.heightAnchor.constraint(equalToConstant: 36),
         ])
+    }
 
-        horizontalStack1.addArrangedSubview(todayCard)
-        horizontalStack1.addArrangedSubview(scheduledCard)
-
-        horizontalStack2.addArrangedSubview(allCard)
-        horizontalStack2.addArrangedSubview(overdueCard)
-
-        verticalStack.addArrangedSubview(horizontalStack1)
-        verticalStack.addArrangedSubview(horizontalStack2)
-
-        view.addSubview(verticalStack)
-        verticalStack.translatesAutoresizingMaskIntoConstraints = false
-
+    private func setupDashboardCards() {
+        dashboardCardsTopRow = generateDashboardRow()
+        dashboardCardsBottomRow = generateDashboardRow()
+        setupDashboardCardsContainer()
+        dashboardCardsTopRow.addArrangedSubview(todayCard)
+        dashboardCardsTopRow.addArrangedSubview(scheduledCard)
+        dashboardCardsBottomRow.addArrangedSubview(allCard)
+        dashboardCardsBottomRow.addArrangedSubview(overdueCard)
+        dashboardCardsContainer.addArrangedSubview(dashboardCardsTopRow)
+        dashboardCardsContainer.addArrangedSubview(dashboardCardsBottomRow)
+        view.addSubview(dashboardCardsContainer)
+        dashboardCardsContainer.translatesAutoresizingMaskIntoConstraints =
+            false
         NSLayoutConstraint.activate([
-            verticalStack.topAnchor.constraint(
+            dashboardCardsContainer.topAnchor.constraint(
                 equalTo: profileCard.bottomAnchor,
                 constant: 30
             ),
-            verticalStack.leftAnchor.constraint(
+            dashboardCardsContainer.leftAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leftAnchor,
                 constant: 20
             ),
-            verticalStack.rightAnchor.constraint(
+            dashboardCardsContainer.rightAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.rightAnchor,
                 constant: -20
             ),
         ])
+    }
 
+    private func setupToDoTable() {
+        tasksTable.translatesAutoresizingMaskIntoConstraints = false
         tasksTable.dataSource = self
         tasksTable.delegate = self
         tasksTable.register(
@@ -153,7 +122,7 @@ class ViewController: UIViewController {
                 constant: -12
             ),
             tasksTable.topAnchor.constraint(
-                equalTo: verticalStack.bottomAnchor,
+                equalTo: dashboardCardsContainer.bottomAnchor,
                 constant: 20
             ),
             tasksTable.bottomAnchor.constraint(
@@ -161,70 +130,85 @@ class ViewController: UIViewController {
                 constant: 0
             ),
         ])
-
     }
 
-    func updateDashBoardCounts() {
+    @objc private func didTapAdd() {
+        let newToDoViewController = EditToDoViewController(mode: .new)
+        newToDoViewController.handleCreateNewToDoCompletion = {
+            () in self.setDashboardCounts()
+        }
+        navigationController?.present(
+            UINavigationController(rootViewController: newToDoViewController),
+            animated: true
+        )
+    }
+
+    private func updateDashBoardCounts() {
         let counts = viewModel.groupedTodoCount
         todayCard.countLabel.text = "\(counts.today)"
         scheduledCard.countLabel.text = "\(counts.scheduled)"
         allCard.countLabel.text = "\(counts.all)"
         overdueCard.countLabel.text = "\(counts.overdue)"
     }
-    
-    @objc func didTapTodayCard(_ sender: UITapGestureRecognizer) {
-        let allTasksViewModel = viewModel.makeAllTasksViewModel()
-        let allTasksViewController = AllTasksViewController(viewModel: allTasksViewModel)
-        navigationController?.pushViewController(allTasksViewController, animated: true)
+
+    @objc private func didTapTodayCard(_ sender: UITapGestureRecognizer) {
+        let allTodosViewController = AllTodosViewController()
+        navigationController?.pushViewController(
+            allTodosViewController,
+            animated: true
+        )
     }
-    
-    func setupDashboard() {
+
+    private func setDashboardCounts() {
         let items = viewModel.fetchItems()
         viewModel.todos = items
         tasksTable.reloadData()
-
         let counts = viewModel.groupedTodoCount
 
         todayCard.configure(
-            title: "Today",
-            count: "\(counts.today)",
-            bgColor: Color.lightBlue.rawValue.getColor(),
-            iconImage: UIImage(systemName: "clock.fill")
+            cardItems: DashboardCardItems(
+                label: "Today",
+                count: "\(counts.today)",
+                bgColor: .lightBlue,
+                iconImageName: "clock.fill"
+            )
         )
 
         scheduledCard.configure(
-            title: "Scheduled",
-            count: "\(counts.scheduled)",
-            bgColor: Color.lightYellow.rawValue.getColor(),
-            iconImage: UIImage(systemName: "stopwatch.fill")
+            cardItems: DashboardCardItems(
+                label: "Scheduled",
+                count: "\(counts.scheduled)",
+                bgColor: .lightYellow,
+                iconImageName: "stopwatch.fill"
+            )
         )
 
         allCard.configure(
-            title: "All",
-            count: "\(counts.all)",
-            bgColor: Color.lightGreen.rawValue.getColor(),
-            iconImage: UIImage(systemName: "arrow.clockwise.circle.fill")
+            cardItems: DashboardCardItems(
+                label: "All",
+                count: "\(counts.all)",
+                bgColor: .lightGreen,
+                iconImageName: "arrow.clockwise.circle.fill"
+            )
         )
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTodayCard(_:)))
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTapTodayCard(_:))
+        )
         allCard.addGestureRecognizer(tapGesture)
 
         overdueCard.configure(
-            title: "Overdue",
-            count: "\(counts.overdue    )",
-            bgColor: Color.lightPink.rawValue.getColor(),
-            iconImage: UIImage(systemName: "gauge.with.needle.fill")
+            cardItems: DashboardCardItems(
+                label: "Overdue",
+                count: "\(counts.overdue)",
+                bgColor: .lightPink,
+                iconImageName: "gauge.with.needle.fill"
+            )
         )
-
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupDashboard()
-    }
-
 }
 
-extension ViewController: UITableViewDataSource {
+extension DashboardViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int)
         -> Int
     {
@@ -246,7 +230,7 @@ extension ViewController: UITableViewDataSource {
         let task = viewModel.todaysTodos[indexPath.row]
 
         cell.customView.configure(
-            label: task.title,
+            title: task.title,
             date: task.date,
             isCompleted: task.isCompleted
         )
@@ -263,34 +247,37 @@ extension ViewController: UITableViewDataSource {
 
 }
 
-extension ViewController: UITableViewDelegate {
-
+extension DashboardViewController: UITableViewDelegate {
     func tableView(
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
 
-        let editToDoViewModel = viewModel.makeEditToDoViewModel()
-        let editToDoViewController = EditToDoViewController(viewModel: editToDoViewModel)
-        editToDoViewController.viewModel.itemToUpdate = viewModel.todaysTodos[indexPath.row]
-        
-        
+        let editToDoViewController = EditToDoViewController(mode: .edit)
+        editToDoViewController.viewModel.itemToUpdate =
+            viewModel.todaysTodos[indexPath.row]
+
         var updateIndex = 0
         for i in 0..<viewModel.todos.count {
             if viewModel.todos[i] == viewModel.todaysTodos[indexPath.row] {
                 updateIndex = i
             }
         }
-        print(updateIndex)
         
         editToDoViewController.viewModel.handleCompletion = {
-            (updatedItem: ToDoItem?) in
-            if self.viewModel.updateItem(updatedItem: updatedItem, updateIndex: updateIndex) {
+            (updatedItem: ToDoItem?) in 
+            if self.viewModel.updateItem(
+                updatedItem: updatedItem,
+                updateIndex: updateIndex
+            ) {
                 self.tasksTable.reloadRows(at: [indexPath], with: .automatic)
             }
         }
 
-        navigationController?.present(UINavigationController(rootViewController: editToDoViewController), animated: true)
+        navigationController?.present(
+            UINavigationController(rootViewController: editToDoViewController),
+            animated: true
+        )
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -299,42 +286,30 @@ extension ViewController: UITableViewDelegate {
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
 
-        // Create a contextual action
         let action = UIContextualAction(style: .destructive, title: "Delete") {
             (action, view, completionHandler) in
-            // Code to execute when swiped
-            print("Delete tapped for row \(indexPath.row)")
-
             let item = self.viewModel.todaysTodos[indexPath.row]
-            
             var deleteIndex = -1
             for i in 0..<self.viewModel.todos.count {
                 if self.viewModel.todos[i] == item {
                     deleteIndex = i
                 }
             }
-            self.viewModel.todos.remove(at: deleteIndex)
 
-            
+            self.viewModel.todos.remove(at: deleteIndex)
             self.viewModel.deleteItem(item: item)
             self.tasksTable.deleteRows(at: [indexPath], with: .fade)
             self.updateDashBoardCounts()
-
-//            // Indicate action completed successfully
             completionHandler(true)
         }
         let isComplete = self.viewModel.todaysTodos[indexPath.row].isCompleted
-
         let markCompleteAction = UIContextualAction(
             style: .normal,
             title: "Mark As " + (isComplete ? "Inc" : "C") + "omplete"
         ) { (action, view, completionHandler) in
-            // Code to execute when swiped
             self.viewModel.todaysTodos[indexPath.row].isCompleted.toggle()
             tableView.reloadRows(at: [indexPath], with: .right)
             tableView.deselectRow(at: indexPath, animated: true)
-
-            // Indicate action completed successfully
             completionHandler(true)
         }
 
@@ -344,11 +319,10 @@ extension ViewController: UITableViewDelegate {
             systemName: "checkmark.square.fill.fill"
         )
 
-        // Return configuration with actions
         let configuration = UISwipeActionsConfiguration(actions: [
             action, markCompleteAction,
         ])
+
         return configuration
     }
-
 }

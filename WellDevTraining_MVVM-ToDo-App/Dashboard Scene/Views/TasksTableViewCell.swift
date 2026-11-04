@@ -1,26 +1,9 @@
-//
-//  TasksTableViewCell.swift
-//  WellDevTraining_MVVM-ToDo-App
-//
-//  Created by Sarowar on 29/10/26.
-//
-
 import UIKit
 
 class TasksTableViewCell: UITableViewCell {
-
     static let identifier = "CustomContainerCell"
-
-    var customView: TaskCardView = {
-        let view = TaskCardView(
-            label: "",
-            date: Date(),
-            isCompleted: false
-        )
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
+    let customView: TaskCardView = TaskCardView()
+  
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCellLayout()
@@ -32,8 +15,8 @@ class TasksTableViewCell: UITableViewCell {
     }
 
     private func setupCellLayout() {
+        customView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(customView)
-
         NSLayoutConstraint.activate([
             customView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             customView.leadingAnchor.constraint(
@@ -47,5 +30,4 @@ class TasksTableViewCell: UITableViewCell {
             ),
         ])
     }
-
 }

@@ -1,10 +1,3 @@
-//
-//  ListToDosViewController.swift
-//  WellDevTraining_MVVM-ToDo-App
-//
-//  Created by Sarowar on 1/11/26.
-//
-
 import UIKit
 
 class ListToDosViewController: UIViewController {
@@ -19,7 +12,6 @@ class ListToDosViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
-        
         
         view.addSubview(tasksTable)
         NSLayoutConstraint.activate([
@@ -41,5 +33,4 @@ class ListToDosViewController: UIViewController {
             ),
         ])
     }
-
 }

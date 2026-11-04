@@ -9,10 +9,7 @@ import UIKit
 import SwiftData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
-    var sharedModelContainer: ModelContainer?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -20,21 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        do {
-            sharedModelContainer = try ModelContainer(for: ToDoItem.self)
-        } catch {
-            print("Failed to initialize SwiftData: \(error)")
-        }
-        guard let container = sharedModelContainer else {
-            return
-        }
-        let context = ModelContext(container)
-        
         let window = UIWindow(windowScene: windowScene)
-        
-        let rootViewModel = ViewModel(modelContext: context)
-        let rootViewController = ViewController(viewModel: rootViewModel)
-        
+        let rootViewController = DashboardViewController()
         window.rootViewController = UINavigationController(rootViewController: rootViewController)
         window.makeKeyAndVisible()
         self.window = window
