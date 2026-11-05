@@ -9,15 +9,17 @@ class AllTodosViewController: UIViewController {
         view.backgroundColor = .systemBackground
         navigationItem.title = "All Tasks"
         setupTodosTable()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         let items = viewModel.fetchItems()
         viewModel.todos = items
         todosTable.reloadData()
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        
+//    }
     
     private func setupTodosTable() {
         todosTable.dataSource = self

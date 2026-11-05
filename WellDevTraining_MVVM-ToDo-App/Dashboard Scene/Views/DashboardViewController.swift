@@ -1,5 +1,5 @@
 import SwiftData
-import UIKit
+import UIKit 
 
 class DashboardViewController: UIViewController {
     private let viewModel: DashboardViewModel = DashboardViewModel()
@@ -135,7 +135,7 @@ class DashboardViewController: UIViewController {
     @objc private func didTapAdd() {
         let newToDoViewController = EditToDoViewController(mode: .new)
         newToDoViewController.handleCreateNewToDoCompletion = {
-            () in self.setDashboardCounts()
+           [weak self] () in self?.setDashboardCounts()
         }
         navigationController?.present(
             UINavigationController(rootViewController: newToDoViewController),
@@ -265,7 +265,10 @@ extension DashboardViewController: UITableViewDelegate {
         }
         
         editToDoViewController.viewModel.handleCompletion = {
-            (updatedItem: ToDoItem?) in 
+           [weak self] (updatedItem: ToDoItem?) in
+            guard let self else {
+                return
+            }
             if self.viewModel.updateItem(
                 updatedItem: updatedItem,
                 updateIndex: updateIndex
@@ -287,7 +290,10 @@ extension DashboardViewController: UITableViewDelegate {
     ) -> UISwipeActionsConfiguration? {
 
         let action = UIContextualAction(style: .destructive, title: "Delete") {
-            (action, view, completionHandler) in
+           [weak self] (action, view, completionHandler) in
+            guard let self else {
+                return
+            }
             let item = self.viewModel.todaysTodos[indexPath.row]
             var deleteIndex = -1
             for i in 0..<self.viewModel.todos.count {
@@ -306,7 +312,10 @@ extension DashboardViewController: UITableViewDelegate {
         let markCompleteAction = UIContextualAction(
             style: .normal,
             title: "Mark As " + (isComplete ? "Inc" : "C") + "omplete"
-        ) { (action, view, completionHandler) in
+        ) { [weak self] (action, view, completionHandler) in
+            guard let self = self else {
+                return
+            }
             self.viewModel.todaysTodos[indexPath.row].isCompleted.toggle()
             tableView.reloadRows(at: [indexPath], with: .right)
             tableView.deselectRow(at: indexPath, animated: true)
