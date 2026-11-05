@@ -1,5 +1,5 @@
 import SwiftData
-import UIKit 
+import UIKit
 
 class DashboardViewController: UIViewController {
     private let viewModel: DashboardViewModel = DashboardViewModel()
